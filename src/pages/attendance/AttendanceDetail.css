@@ -1,0 +1,217 @@
+.attendance-detail-page {
+    animation: fadeIn var(--transition-base);
+}
+
+.attendance-detail-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: var(--space-lg);
+}
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-xl);
+}
+
+.btn-save {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-success);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-save:hover {
+    background: #16a34a;
+}
+
+.employee-info-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-gray-200);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.employee-name {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-xs);
+}
+
+.employee-meta {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+}
+
+.month-selector {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-gray-200);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.month-selector label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-700);
+}
+
+.month-selector select {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+}
+
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-2xl);
+}
+
+.stat-box {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-gray-200);
+    padding: var(--space-xl);
+    text-align: center;
+}
+
+.stat-box-success {
+    border-color: var(--color-success);
+    background: var(--color-success-bg);
+}
+
+.stat-box-danger {
+    border-color: var(--color-danger);
+    background: var(--color-danger-bg);
+}
+
+.stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-md);
+}
+
+.day-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--color-gray-200);
+    padding: var(--space-md);
+    text-align: center;
+    transition: all var(--transition-fast);
+}
+
+.day-card-present {
+    border-color: var(--color-success);
+    background: var(--color-success-bg);
+}
+
+.day-card-absent {
+    border-color: var(--color-danger);
+    background: var(--color-danger-bg);
+}
+
+.day-card-holiday {
+    border-color: var(--color-gray-300);
+    background: var(--color-gray-100);
+}
+
+.day-card-sunday {
+    opacity: 0.7;
+}
+
+.day-number {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-xs);
+}
+
+.day-name {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-sm);
+}
+
+.day-controls {
+    display: flex;
+    gap: var(--space-xs);
+    justify-content: center;
+}
+
+.status-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-300);
+    background: white;
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.status-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.status-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.day-holiday {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 768px) {
+    .attendance-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+
+    .month-selector {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

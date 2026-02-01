@@ -1,0 +1,214 @@
+.payroll-page {
+    animation: fadeIn var(--transition-base);
+}
+
+.payroll-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: var(--space-lg);
+}
+
+.payroll-header {
+    margin-bottom: var(--space-xl);
+}
+
+.payroll-title {
+    font-size: var(--font-size-3xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-xs);
+}
+
+.payroll-subtitle {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-base);
+}
+
+.payroll-table-container {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-gray-200);
+    overflow: hidden;
+    margin-bottom: var(--space-md);
+}
+
+.payroll-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payroll-table thead {
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.payroll-table th {
+    padding: var(--space-md) var(--space-lg);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payroll-table tbody tr {
+    border-bottom: 1px solid var(--color-gray-200);
+    transition: background var(--transition-fast);
+}
+
+.payroll-table tbody tr:hover {
+    background: var(--color-gray-50);
+}
+
+.payroll-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.payroll-table td {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+.payroll-period {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+}
+
+.payroll-amount {
+    font-family: monospace;
+    font-weight: var(--font-weight-medium);
+}
+
+.payroll-net {
+    font-family: monospace;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-success);
+}
+
+.payroll-empty {
+    padding: var(--space-3xl);
+    text-align: center;
+    color: var(--color-gray-500);
+}
+
+.payroll-summary {
+    padding: var(--space-md);
+    text-align: center;
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn var(--transition-fast);
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2xl);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+    animation: slideUp var(--transition-base);
+}
+
+.modal-header {
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.modal-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin: 0;
+}
+
+.modal-body {
+    padding: var(--space-xl);
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-group label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-700);
+    margin-bottom: var(--space-xs);
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-fast);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-bg);
+}
+
+.modal-footer {
+    padding: var(--space-lg);
+    border-top: 1px solid var(--color-gray-200);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+}
+
+.btn-cancel {
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-cancel:hover {
+    background: var(--color-gray-200);
+}
+
+@media (max-width: 1200px) {
+    .payroll-table {
+        font-size: var(--font-size-xs);
+    }
+
+    .payroll-table th,
+    .payroll-table td {
+        padding: var(--space-sm) var(--space-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .payroll-table-container {
+        overflow-x: auto;
+    }
+
+    .payroll-table {
+        min-width: 900px;
+    }
+}
