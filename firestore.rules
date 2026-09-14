@@ -1,0 +1,217 @@
+rules_version = '2';
+
+// ARRIS — server-side role enforcement.
+// The UI hides what a role cannot do; these rules are what actually stops it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function staffDoc() {
+      return get(/databases/$(database)/documents/staff/$(request.auth.uid)).data;
+    }
+
+    function isStaffMember() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/staff/$(request.auth.uid))
+        && staffDoc().active == true;
+    }
+
+    function role() {
+      return isStaffMember() ? staffDoc().role : 'none';
+    }
+
+    function isSuperAdmin() { return role() == 'super_admin'; }
+    function isManager()    { return role() == 'manager'; }
+    function isStaff()      { return role() == 'staff'; }
+
+    function isManagerUp()  { return isSuperAdmin() || isManager(); }
+
+    function unchanged(field) {
+      return !(field in request.resource.data)
+        || request.resource.data[field] == resource.data[field];
+    }
+
+    // ---------- public catalogue ----------
+    // Anyone with a table QR can read the menu; only managers and above edit it.
+    match /branches/{id} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /tables/{id} {
+      allow read: if true;
+      allow create, update: if isManagerUp();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /menuCategories/{id} {
+      allow read: if true;
+      allow create, update: if isManagerUp();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /menuItems/{id} {
+      allow read: if true;
+      // Staff can never change a price — only availability.
+      allow update: if isManagerUp()
+        || (isStaff()
+            && unchanged('price')
+            && unchanged('variants')
+            && unchanged('name')
+            && unchanged('itemNumber')
+            && unchanged('categorySlug'));
+      allow create: if isManagerUp();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /settings/{id} {
+      allow read: if true;
+      // Currency, branding and other critical settings are super-admin only.
+      allow write: if isSuperAdmin();
+    }
+
+    match /loyaltyCampaigns/{id} {
+      allow read: if true;
+      allow write: if isManagerUp();
+    }
+
+    // ---------- loyalty ----------
+    // A customer's own card is fetched by its code, which doubles as the
+    // document id. Listing the directory stays staff-only, and the phone
+    // number lives on the (staff-only) customer record, not here.
+    match /loyaltyAccounts/{code} {
+      allow get: if true;
+      allow list: if isStaffMember();
+      // Only signed-in staff may move a stamp count. This is what stops a
+      // customer stamping their own card.
+      allow update: if isStaffMember();
+      allow create: if isManagerUp()
+        // Self-registration starts an empty card and nothing else.
+        || (request.resource.data.stamps == 0
+            && request.resource.data.lifetimeStamps == 0
+            && request.resource.data.rewardsRedeemed == 0
+            && request.resource.data.status == 'collecting');
+      allow delete: if isSuperAdmin();
+    }
+
+    match /customers/{code} {
+      // Phone numbers are never public. Registration may create a record.
+      allow get, list: if isStaffMember();
+      allow create: if isStaffMember()
+        || (request.resource.data.name is string
+            && request.resource.data.name.size() >= 2
+            && request.resource.data.mobile is string
+            && request.resource.data.mobile.size() == 10);
+      allow update: if isManagerUp();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /loyaltyTransactions/{txnId} {
+      // Readable so a customer can see their own stamp history by code.
+      allow read: if true;
+      // Create only — never update or delete. Combined with the deterministic
+      // document id (campaign + transaction reference) this makes one
+      // transaction reference worth exactly one stamp, forever.
+      allow create: if isStaffMember()
+        && request.resource.data.staffUid == request.auth.uid
+        && request.resource.data.type in ['stamp', 'redeem'];
+      allow update, delete: if false;
+    }
+
+    // ---------- orders & service requests ----------
+    match /orders/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.status == 'new'
+        && request.resource.data.total is number
+        && request.resource.data.total >= 0;
+      allow update: if isStaffMember();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /orderItems/{id} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isStaffMember();
+    }
+
+    match /notifications/{id} {
+      allow read: if isStaffMember();
+      // Call Staff / Request Bill come from an unauthenticated table device.
+      allow create: if request.resource.data.status == 'open'
+        && request.resource.data.type in ['call_staff', 'request_bill', 'order'];
+      allow update: if isStaffMember();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ---------- finance ----------
+    match /suppliers/{id} {
+      allow read: if isStaffMember();
+      allow create, update: if isManagerUp();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /expenseCategories/{id} {
+      allow read: if isStaffMember();
+      allow write: if isManagerUp();
+    }
+
+    match /expenses/{id} {
+      allow read: if isStaffMember();
+      // Staff may record an expense but may never revise or remove one.
+      allow create: if isStaffMember()
+        && request.resource.data.addedByUid == request.auth.uid
+        && request.resource.data.archived == false
+        && request.resource.data.total is number;
+      allow update: if isManagerUp();
+      // Hard deletion of a financial record needs a super admin.
+      allow delete: if isSuperAdmin();
+    }
+
+    match /sales/{id} {
+      allow read: if isStaffMember();
+      allow create, update: if isManagerUp();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ---------- people & system ----------
+    match /staff/{uid} {
+      // A signed-in user must be able to read their own role record.
+      allow get: if signedIn() && (request.auth.uid == uid || isManagerUp());
+      allow list: if isManagerUp();
+      allow create, delete: if isSuperAdmin();
+      // A manager may edit staff, but may not touch a super admin and may not
+      // mint one either.
+      allow update: if isSuperAdmin()
+        || (isManager()
+            && resource.data.role != 'super_admin'
+            && request.resource.data.role != 'super_admin');
+    }
+
+    match /roles/{id} {
+      allow read: if isStaffMember();
+      allow write: if isSuperAdmin();
+    }
+
+    match /auditLogs/{id} {
+      allow read: if isManagerUp();
+      // Append-only: the log is worthless if it can be rewritten.
+      allow create: if isStaffMember() && request.resource.data.userUid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /priceHistory/{id} {
+      allow read: if isStaffMember();
+      allow create: if isManagerUp() && request.resource.data.changedByUid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Anything not matched above is denied.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
