@@ -62,3 +62,33 @@ export function getStorageClient(): FirebaseStorage {
   }
   return storageInstance;
 }
+
+/**
+ * Creates an Auth user on a *secondary* Firebase app so that creating a staff
+ * login does not sign the current admin out. The secondary app is signed out
+ * and discarded immediately afterwards.
+ */
+export async function createAuthUserWithoutSignIn(
+  email: string,
+  password: string,
+): Promise<string> {
+  const { createUserWithEmailAndPassword, getAuth: getAuthFor, signOut } = await import(
+    'firebase/auth'
+  );
+  const { deleteApp, initializeApp: initSecondary } = await import('firebase/app');
+
+  if (!firebaseReady) throw new Error('Firebase is not configured.');
+
+  const secondary = initSecondary(firebaseConfig, `staff-provisioner-${Date.now()}`);
+  try {
+    const secondaryAuth = getAuthFor(secondary);
+    if (useEmulators) {
+      connectAuthEmulator(secondaryAuth, 'http://127.0.0.1:9099', { disableWarnings: true });
+    }
+    const credential = await createUserWithEmailAndPassword(secondaryAuth, email.trim(), password);
+    await signOut(secondaryAuth);
+    return credential.user.uid;
+  } finally {
+    await deleteApp(secondary);
+  }
+}
