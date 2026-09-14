@@ -1,0 +1,233 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ---- ARRIS brand tokens — do not substitute ---- */
+  --arris-gold: #E69719;
+  --arris-gold-light: #DFA759;
+  --arris-gold-pale: #E4D3A9;
+  --arris-brown: #6A4F28;
+  --arris-brown-deep: #532919;
+  --arris-espresso: #26110A;
+  --arris-copper: #97622C;
+  --arris-marble: #EBEBE9;
+  --arris-marble-vein: #B4B1A9;
+  --arris-card: #FDFCF9;
+  --arris-line: rgba(230, 151, 25, 0.35);
+
+  --arris-success: #4E7A3B;
+  --arris-warning: #E69719;
+  --arris-danger: #A33A1E;
+
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--arris-marble);
+    color: var(--arris-brown);
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--arris-gold-pale);
+    color: var(--arris-brown-deep);
+  }
+
+  /* Keyboard focus stays gold, never the browser blue */
+  :focus-visible {
+    outline: 2px solid var(--arris-gold);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  input,
+  select,
+  textarea {
+    accent-color: var(--arris-gold);
+  }
+}
+
+@layer components {
+  /* ---------- Surfaces ---------- */
+  .surface-marble {
+    background-color: var(--arris-marble);
+    background-image:
+      radial-gradient(at 12% 8%, rgba(255, 255, 255, 0.9) 0px, transparent 55%),
+      radial-gradient(at 88% 22%, rgba(180, 177, 169, 0.28) 0px, transparent 45%),
+      radial-gradient(at 30% 92%, rgba(228, 211, 169, 0.24) 0px, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.70 0 0 0 0 0.69 0 0 0 0 0.66 0 0 0 0.055 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .surface-espresso {
+    background-color: var(--arris-espresso);
+    background-image:
+      radial-gradient(at 20% 0%, rgba(230, 151, 25, 0.20) 0px, transparent 55%),
+      radial-gradient(at 82% 100%, rgba(151, 98, 44, 0.28) 0px, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.85 0 0 0 0 0.6 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    color: var(--arris-gold-pale);
+  }
+
+  .card-surface {
+    background-color: var(--arris-card);
+    border: 1px solid var(--arris-line);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px -12px rgba(38, 17, 10, 0.18), 0 2px 6px -2px rgba(38, 17, 10, 0.08);
+  }
+
+  /* ---------- Type roles ---------- */
+  .script-title {
+    font-family: var(--font-great-vibes), cursive;
+    color: var(--arris-brown-deep);
+    line-height: 1.15;
+    /* Great Vibes has deep descenders; keep them from clipping */
+    padding-bottom: 0.12em;
+  }
+
+  .display-title {
+    font-family: var(--font-cinzel), Georgia, serif;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  .label-text {
+    font-family: var(--font-antonio), Impact, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition;
+    min-height: 44px;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--arris-gold) 0%, var(--arris-gold-light) 100%);
+    color: var(--arris-espresso);
+    box-shadow: 0 8px 20px -10px rgba(230, 151, 25, 0.9);
+  }
+  .btn-gold:hover {
+    filter: brightness(1.06);
+  }
+
+  .btn-outline {
+    border: 1.5px solid var(--arris-gold);
+    color: var(--arris-brown-deep);
+    background: transparent;
+  }
+  .btn-outline:hover {
+    background: rgba(230, 151, 25, 0.10);
+  }
+
+  .btn-outline-light {
+    border: 1.5px solid var(--arris-gold);
+    color: var(--arris-gold-pale);
+    background: rgba(38, 17, 10, 0.35);
+  }
+  .btn-outline-light:hover {
+    background: rgba(230, 151, 25, 0.18);
+  }
+
+  .btn-ghost {
+    color: var(--arris-brown);
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    background: rgba(151, 98, 44, 0.10);
+  }
+
+  .btn-danger {
+    background: var(--arris-danger);
+    color: #fff;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: none;
+  }
+
+  /* ---------- Forms ---------- */
+  .field {
+    @apply w-full rounded-xl px-3 py-2.5 text-sm;
+    background: var(--arris-card);
+    border: 1px solid var(--arris-marble-vein);
+    color: var(--arris-brown);
+    min-height: 44px;
+  }
+  .field:focus {
+    border-color: var(--arris-gold);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(230, 151, 25, 0.18);
+  }
+  .field-label {
+    @apply mb-1.5 block text-xs font-semibold;
+    color: var(--arris-copper);
+  }
+
+  /* ---------- Numbered badge on menu cards ---------- */
+  .item-badge {
+    @apply absolute flex items-center justify-center rounded-full;
+    top: -12px;
+    left: -8px;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--arris-gold);
+    background: var(--arris-card);
+    color: var(--arris-brown-deep);
+    font-family: var(--font-antonio), Impact, sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.04em;
+    box-shadow: 0 4px 10px -4px rgba(38, 17, 10, 0.35);
+  }
+
+  /* ---------- Circular photo with gold ring ---------- */
+  .photo-ring {
+    @apply relative overflow-hidden rounded-full;
+    border: 4px solid var(--arris-gold);
+    background: var(--arris-marble);
+    box-shadow: 0 6px 18px -8px rgba(38, 17, 10, 0.45);
+  }
+
+  /* ---------- Scrollbars inside admin tables ---------- */
+  .thin-scroll::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+  .thin-scroll::-webkit-scrollbar-thumb {
+    background: var(--arris-gold-pale);
+    border-radius: 999px;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Renders the white-on-dark logo file in brand brown for light surfaces.
+     The artwork itself is never redrawn — only re-tinted. */
+  .logo-on-light {
+    filter: brightness(0) saturate(100%) invert(17%) sepia(41%) saturate(1719%) hue-rotate(348deg) brightness(94%) contrast(93%);
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}

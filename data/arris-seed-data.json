@@ -1,0 +1,190 @@
+{
+  "_note": "Real Arris menu data extracted from the official Arris 2025 printed menu (24 pages). Use as seed data. Currency is INR (₹). item_number matches the badge number printed on each menu card. Items with a 'variants' array print multiple name+price rows on one card.",
+
+  "settings": {
+    "restaurant_name": "ARRIS",
+    "tagline": "Restaurant & Café — Somali Cuisine",
+    "currency_code": "INR",
+    "currency_symbol": "₹",
+    "currency_position": "before",
+    "decimal_places": 0
+  },
+
+  "branches": [
+    { "slug": "arris-1", "name": "Arris 1", "type": "restaurant", "has_cafe": false },
+    { "slug": "arris-2", "name": "Arris 2", "type": "restaurant", "has_cafe": true },
+    { "slug": "arris-2-cafe", "name": "Arris 2 Café", "type": "cafe", "parent": "arris-2" }
+  ],
+
+  "tables": [
+    { "branch": "arris-1", "numbers": ["01","02","03","04","05","06","07","08","09","10"] },
+    { "branch": "arris-2", "numbers": ["01","02","03","04","05","06","07","08","09","10"] }
+  ],
+
+  "menu_categories": [
+    { "slug": "breakfast", "name": "Breakfast Menu", "script_title": "Breakfast Menu", "sort": 1, "section": "restaurant" },
+    { "slug": "lunch-dinner", "name": "Lunch & Dinner", "script_title": "Lunch & Dinner", "sort": 2, "section": "restaurant" },
+    { "slug": "fresh-juice", "name": "Fresh Juice", "script_title": "Fresh Juice", "sort": 3, "section": "cafe" },
+    { "slug": "drink-coffee", "name": "Drink & Coffee", "script_title": "Drink & Coffee", "sort": 4, "section": "cafe" }
+  ],
+
+  "menu_items": [
+    { "item_number": "01", "category": "breakfast", "name": "Suqaar", "price": 200 },
+    { "item_number": "02", "category": "breakfast", "name": "Kalaakal Beef Sugaar", "variants": [
+      { "name": "Kalaakal Beef Sugaar", "price": 200 },
+      { "name": "Fry Kalankal", "price": 230 }
+    ]},
+    { "item_number": "03", "category": "breakfast", "name": "Beer Ari", "description": "Liver Lamb", "price": 220 },
+    { "item_number": "04", "category": "breakfast", "name": "Kili", "description": "Kidney", "price": 300 },
+    { "item_number": "05", "category": "breakfast", "name": "Ukun Shakshuko", "description": "Scrambled eggs", "price": 150 },
+    { "item_number": "06", "category": "breakfast", "name": "Boorash - Mushaari", "description": "Porridge, Somali style", "price": 120 },
+    { "item_number": "07", "category": "breakfast", "name": "Canjeelo iyo Maraq", "description": "Anjeelo with soup", "price": 120 },
+    { "item_number": "08", "category": "breakfast", "name": "Fuul Somali", "description": "Somalian Ful (Fava Beans)", "price": 150 },
+    { "item_number": "09", "category": "breakfast", "name": "Canjeelo", "description": "3 xabo", "price": 30 },
+    { "item_number": "10", "category": "breakfast", "name": "Malawax", "description": "1 xabo", "price": 30 },
+    { "item_number": "11", "category": "breakfast", "name": "Sabaayad", "description": "1 xabo", "price": 30 },
+    { "item_number": "12", "category": "breakfast", "name": "Ukun (Umlett)", "price": 150 },
+
+    { "item_number": "13", "category": "lunch-dinner", "name": "Bariis", "variants": [
+      { "name": "Bariis (half)", "price": 130 },
+      { "name": "Bariis (full)", "price": 200 },
+      { "name": "Bariis Saldata (half)", "price": 200 },
+      { "name": "Bariis Saldata (full)", "price": 400 }
+    ]},
+    { "item_number": "14", "category": "lunch-dinner", "name": "Chicken Kalankal", "variants": [
+      { "name": "Chicken Kalankal", "price": 200 },
+      { "name": "Fry Chicken", "price": 230 }
+    ]},
+    { "item_number": "15", "category": "lunch-dinner", "name": "Hilib Ari (Waslad)", "price": 300 },
+    { "item_number": "16", "category": "lunch-dinner", "name": "Baasta Haafayn", "price": 260 },
+    { "item_number": "17", "category": "lunch-dinner", "name": "Bariis Haafayn", "price": 230 },
+    { "item_number": "18", "category": "lunch-dinner", "name": "Fadareeshin", "price": 160 },
+    { "item_number": "19", "category": "lunch-dinner", "name": "Ugaali", "variants": [
+      { "name": "Ugaali (Plain)", "price": 120 },
+      { "name": "Ugaali (Soor) + Khudar", "price": 270 },
+      { "name": "Ugaali (Soor) + Maraq", "price": 150 }
+    ]},
+    { "item_number": "20", "category": "lunch-dinner", "name": "Baasto", "variants": [
+      { "name": "Baasto", "price": 160 },
+      { "name": "Baasto (Saldato)", "price": 200 },
+      { "name": "Baasto Saldato / Kalankal iyo Chicken", "price": 300 }
+    ]},
+    { "item_number": "21", "category": "lunch-dinner", "name": "Chicken Leg", "description": "1 xabo", "price": 120 },
+    { "item_number": "22", "category": "lunch-dinner", "name": "Kosto", "description": "Khudaar iyo jabaati", "price": 210 },
+    { "item_number": "23", "category": "lunch-dinner", "name": "Kaluun", "description": "Tuna Fish", "price": 300 },
+    { "item_number": "24", "category": "lunch-dinner", "name": "Jabaati Saldaata", "variants": [
+      { "name": "Jabaati saldaata plain", "price": 200 },
+      { "name": "Jabaati saldaata iyo kalankal/chicken", "price": 300 },
+      { "name": "Jabaati saldaata iyo Fish", "price": 350 }
+    ]},
+    { "item_number": "25", "category": "lunch-dinner", "name": "Sizzling", "variants": [
+      { "name": "Sizzling (Chicken)", "price": 300 },
+      { "name": "Sizzling (Kalankal)", "price": 300 },
+      { "name": "Sizzling (Fish)", "price": 350 }
+    ]},
+    { "item_number": "26", "category": "lunch-dinner", "name": "Isku Fadhi", "price": 300 },
+    { "item_number": "27", "category": "lunch-dinner", "name": "Salbuuka (Saldato)", "price": 200 },
+    { "item_number": "28", "category": "lunch-dinner", "name": "Jabaati Roll", "price": 150 },
+    { "item_number": "29", "category": "lunch-dinner", "name": "Chicken Curry", "price": 250 },
+    { "item_number": "30", "category": "lunch-dinner", "name": "Canbuulo", "price": 130 },
+    { "item_number": "31", "category": "lunch-dinner", "name": "Fish Curry", "price": 350 },
+    { "item_number": "32", "category": "lunch-dinner", "name": "Chicken Burger", "price": 150 },
+    { "item_number": "33", "category": "lunch-dinner", "name": "Soor Saldaata iyo Kalankal/Chicken", "price": 300 },
+    { "item_number": "34", "category": "lunch-dinner", "name": "Canbuulo Mixed", "price": 130 },
+    { "item_number": "35", "category": "lunch-dinner", "name": "Salbuuko", "price": 130 },
+    { "item_number": "36", "category": "lunch-dinner", "name": "Masago (Haruur)", "price": 130 },
+    { "item_number": "37", "category": "lunch-dinner", "name": "Chicken Steak", "price": 250, "popular": true },
+    { "item_number": "38", "category": "lunch-dinner", "name": "Beef Steak", "price": 250, "popular": true },
+    { "item_number": "39", "category": "lunch-dinner", "name": "Beef Stew", "price": 200 },
+    { "item_number": "40", "category": "lunch-dinner", "name": "Chicken Stew", "price": 200 },
+    { "item_number": "41", "category": "lunch-dinner", "name": "Family Plotter", "featured": true, "layout": "full_width", "variants": [
+      { "name": "Family plotter 4 pp", "price": 1600 },
+      { "name": "Family plotter 2 pp", "price": 1300 }
+    ]},
+    { "item_number": "42", "category": "lunch-dinner", "name": "Mufo Saldata", "featured": true, "layout": "full_width", "variants": [
+      { "name": "Group 4 Mufo saldata", "price": 1200 },
+      { "name": "Group 2 Mufo saldato", "price": 800 },
+      { "name": "Group 1 Mufo saldato", "price": 300 }
+    ]},
+    { "item_number": "43", "category": "lunch-dinner", "name": "Hilib Dhaylo Waslad", "badge": "Only for special Fridays", "badge_style": "gold_highlight", "featured": true, "layout": "full_width", "price": 1300 },
+    { "item_number": "44", "category": "lunch-dinner", "name": "Fadiirad", "featured": true, "layout": "full_width", "price": 300 },
+
+    { "item_number": "01", "category": "fresh-juice", "name": "Orange", "price": 100 },
+    { "item_number": "02", "category": "fresh-juice", "name": "Qare (Xabxab)", "price": 80 },
+    { "item_number": "03", "category": "fresh-juice", "name": "Tufaax", "price": 80 },
+    { "item_number": "04", "category": "fresh-juice", "name": "Cambe", "price": 100 },
+    { "item_number": "05", "category": "fresh-juice", "name": "Babaay", "price": 80 },
+    { "item_number": "06", "category": "fresh-juice", "name": "Pineapple", "price": 80 },
+    { "item_number": "07", "category": "fresh-juice", "name": "Mosambi", "price": 80 },
+    { "item_number": "08", "category": "fresh-juice", "name": "Avocado", "price": 120 },
+    { "item_number": "09", "category": "fresh-juice", "name": "Batiiq (Shamam)", "price": 80 },
+    { "item_number": "10", "category": "fresh-juice", "name": "Canab (Grapes)", "price": 100 },
+    { "item_number": "11", "category": "fresh-juice", "name": "Kiwi", "price": 100 },
+    { "item_number": "12", "category": "fresh-juice", "name": "Karoot", "price": 80 },
+    { "item_number": "13", "category": "fresh-juice", "name": "Caano Muus", "price": 100 },
+    { "item_number": "14", "category": "fresh-juice", "name": "Saytuun (Guava)", "price": 100 },
+    { "item_number": "15", "category": "fresh-juice", "name": "Dragon", "price": 100 },
+    { "item_number": "16", "category": "fresh-juice", "name": "Pomegranate", "price": 120 },
+    { "item_number": "17", "category": "fresh-juice", "name": "Furlaato", "price": 100 },
+    { "item_number": "18", "category": "fresh-juice", "name": "Fig", "price": 80 },
+    { "item_number": "19", "category": "fresh-juice", "name": "Mushakal (Cocktail)", "price": 80 },
+    { "item_number": "20", "category": "fresh-juice", "name": "Fruit Bowl", "price": 80 },
+
+    { "item_number": "01", "category": "drink-coffee", "name": "Shaah", "description": "Cadeys / Black", "price": 50 },
+    { "item_number": "02", "category": "drink-coffee", "name": "Cappuccino / Latte", "price": 100, "loyalty_eligible": true, "popular": true },
+    { "item_number": "03", "category": "drink-coffee", "name": "Espresso", "price": 100, "loyalty_eligible": true },
+    { "item_number": "04", "category": "drink-coffee", "name": "Dawa Tea", "price": 130 },
+    { "item_number": "05", "category": "drink-coffee", "name": "Shaah Caano Geel", "price": 70 },
+    { "item_number": "06", "category": "drink-coffee", "name": "Caano Geel", "variants": [
+      { "name": "Caano Geel (Half)", "price": 130 },
+      { "name": "Caano Geel (Full)", "price": 260 }
+    ]},
+    { "item_number": "07", "category": "drink-coffee", "name": "Karkadi / Raqay Fresh Juice", "variants": [
+      { "name": "Karkadi Fresh Juice", "price": 50 },
+      { "name": "Raqay Fresh Juice", "price": 50 }
+    ]},
+    { "item_number": "08", "category": "drink-coffee", "name": "Biyo", "description": "Water", "price": 10 }
+  ],
+
+  "loyalty_campaign": {
+    "name": "Coffee Loyalty",
+    "branch": "arris-2-cafe",
+    "required_stamps": 10,
+    "reward_item": "Cappuccino / Latte",
+    "reward_quantity": 1,
+    "eligible_items": ["Cappuccino / Latte", "Espresso"],
+    "active": true,
+    "marketing_headline": "YOUR COFFEE. YOUR REWARD.",
+    "marketing_subline": "Enjoy your coffee. Collect your stamps. Get your next coffee FREE."
+  },
+
+  "expense_categories": [
+    { "group": "Meat", "items": ["Beef", "Mutton", "Chicken", "Fish"] },
+    { "group": "Food / Raw Materials", "items": ["Rice", "Pasta", "Vegetables", "Fruits", "Oil", "Spices", "Milk", "Coffee", "Tea", "Flour", "Sugar", "Other raw materials"] },
+    { "group": "Operations", "items": ["Water", "Gas", "Electricity", "Maintenance", "Cleaning", "Transport", "Petrol", "Staff", "Rent", "Other expenses"] }
+  ],
+
+  "sample_suppliers": [
+    { "name": "Al Noor Meat Supply", "phone": "+91 90000 00001", "category": "Meat", "items": ["Beef", "Mutton"] },
+    { "name": "Fresh Poultry Traders", "phone": "+91 90000 00002", "category": "Meat", "items": ["Chicken"] },
+    { "name": "Coastal Fish Market", "phone": "+91 90000 00003", "category": "Meat", "items": ["Fish"] },
+    { "name": "City Wholesale Grocers", "phone": "+91 90000 00004", "category": "Food / Raw Materials", "items": ["Rice", "Oil", "Spices", "Flour", "Sugar"] },
+    { "name": "Daily Dairy & Coffee", "phone": "+91 90000 00005", "category": "Food / Raw Materials", "items": ["Milk", "Coffee", "Tea"] }
+  ],
+
+  "sample_expenses": [
+    { "date": "2026-09-12", "branch": "arris-1", "category": "Meat", "item": "Beef", "supplier": "Al Noor Meat Supply", "qty": 20, "unit": "KG", "rate": 500, "total": 10000, "payment_method": "Cash" },
+    { "date": "2026-09-12", "branch": "arris-1", "category": "Meat", "item": "Chicken", "supplier": "Fresh Poultry Traders", "qty": 15, "unit": "KG", "rate": 250, "total": 3750, "payment_method": "Cash" },
+    { "date": "2026-09-12", "branch": "arris-2", "category": "Meat", "item": "Mutton", "supplier": "Al Noor Meat Supply", "qty": 10, "unit": "KG", "rate": 750, "total": 7500, "payment_method": "UPI" },
+    { "date": "2026-09-12", "branch": "arris-2", "category": "Food / Raw Materials", "item": "Rice", "supplier": "City Wholesale Grocers", "qty": 50, "unit": "KG", "rate": 70, "total": 3500, "payment_method": "Bank Transfer" },
+    { "date": "2026-09-12", "branch": "arris-2-cafe", "category": "Food / Raw Materials", "item": "Coffee", "supplier": "Daily Dairy & Coffee", "qty": 5, "unit": "KG", "rate": 900, "total": 4500, "payment_method": "Cash" },
+    { "date": "2026-09-12", "branch": "arris-2-cafe", "category": "Food / Raw Materials", "item": "Milk", "supplier": "Daily Dairy & Coffee", "qty": 40, "unit": "L", "rate": 60, "total": 2400, "payment_method": "Cash" },
+    { "date": "2026-09-12", "branch": "arris-1", "category": "Operations", "item": "Gas", "supplier": null, "qty": 2, "unit": "Cylinder", "rate": 1800, "total": 3600, "payment_method": "Cash" }
+  ],
+
+  "roles": [
+    { "name": "Super Admin", "permissions": ["*"] },
+    { "name": "Manager", "permissions": ["dashboard.view", "menu.manage", "tables.manage", "loyalty.manage", "expenses.create", "expenses.edit", "reports.view", "orders.manage"] },
+    { "name": "Staff", "permissions": ["menu.view", "loyalty.stamp", "loyalty.redeem", "orders.view", "expenses.create"] }
+  ]
+}
