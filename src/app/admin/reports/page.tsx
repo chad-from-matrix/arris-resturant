@@ -21,14 +21,22 @@ import {
   Th,
 } from '@/components/ui/Primitives';
 import { useApp } from '@/lib/app-context';
+import { subscribeAuditLogs } from '@/lib/db/audit';
 import { MEAT_GROUP, subscribeExpenses } from '@/lib/db/expenses';
 import { subscribeLoyaltyAccounts, subscribeRecentLoyaltyTransactions } from '@/lib/db/loyalty';
 import { subscribeOrders } from '@/lib/db/orders';
 import { subscribeSales } from '@/lib/db/sales';
 import { downloadCsv, downloadExcel, printReport } from '@/lib/export';
 import { firebaseReady } from '@/lib/firebase';
-import { formatDate, formatMoney, formatNumber, monthKey } from '@/lib/format';
-import type { Expense, LoyaltyAccount, LoyaltyTransaction, Order, Sale } from '@/lib/types';
+import { formatDate, formatDateTime, formatMoney, formatNumber, monthKey } from '@/lib/format';
+import type {
+  AuditLog,
+  Expense,
+  LoyaltyAccount,
+  LoyaltyTransaction,
+  Order,
+  Sale,
+} from '@/lib/types';
 
 export default function AdminReportsPage() {
   const { settings, branches, staff } = useApp();
@@ -38,6 +46,7 @@ export default function AdminReportsPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [accounts, setAccounts] = useState<LoyaltyAccount[]>([]);
   const [stamps, setStamps] = useState<LoyaltyTransaction[]>([]);
+  const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,6 +63,7 @@ export default function AdminReportsPage() {
       subscribeOrders({}, setOrders, () => undefined),
       subscribeLoyaltyAccounts(setAccounts, () => undefined),
       subscribeRecentLoyaltyTransactions(500, setStamps, () => undefined),
+      subscribeAuditLogs(100, setLogs, () => undefined),
     ];
     return () => unsubs.forEach((u) => u());
   }, [range.from, range.to, staff]);
@@ -429,6 +439,61 @@ export default function AdminReportsPage() {
             ) : null}
           </Card>
         </div>
+
+        <Card className="mt-5">
+          <h2 className="label-text text-[11px] text-copper">Audit log</h2>
+          <Ornament className="mt-2" width="w-10" />
+          <p className="mt-2 text-xs text-marble-vein">
+            Every financial and configuration change, with the old value, the new value, who made
+            it and when. The log is append-only — the rules refuse any edit to it.
+          </p>
+          {logs.length ? (
+            <div className="mt-4">
+              <TableShell>
+                <thead>
+                  <tr>
+                    <Th>When</Th>
+                    <Th>Who</Th>
+                    <Th>Entity</Th>
+                    <Th>Action</Th>
+                    <Th>Field</Th>
+                    <Th>Old value</Th>
+                    <Th>New value</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.map((log) => (
+                    <tr key={log.id}>
+                      <Td>
+                        <span className="text-xs text-marble-vein">
+                          {formatDateTime(log.createdAt)}
+                        </span>
+                      </Td>
+                      <Td>{log.userName}</Td>
+                      <Td>{log.entity}</Td>
+                      <Td>
+                        <span className="label-text rounded-full bg-copper/15 px-2.5 py-1 text-[10px] text-copper">
+                          {log.action}
+                        </span>
+                      </Td>
+                      <Td>{log.field ?? '—'}</Td>
+                      <Td>
+                        <span className="text-xs text-marble-vein">{log.oldValue ?? '—'}</span>
+                      </Td>
+                      <Td>
+                        <span className="text-xs font-semibold text-brown">
+                          {log.newValue ?? '—'}
+                        </span>
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </TableShell>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-marble-vein">Nothing logged yet.</p>
+          )}
+        </Card>
       </PermissionGate>
     </AdminShell>
   );

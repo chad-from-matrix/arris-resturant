@@ -78,7 +78,7 @@ export default function AdminBranchesPage() {
         ) : null
       }
     >
-      <PermissionGate permission="dashboard.view">
+      <PermissionGate permission="branches.view">
         {!isSuperAdmin ? (
           <div className="mb-4">
             <Banner tone="info">Only a super admin can add or change a branch.</Banner>

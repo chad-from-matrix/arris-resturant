@@ -110,7 +110,11 @@ export default function AdminDashboardPage() {
         <StatCard
           label="Food cost (14 days)"
           value={foodCostPct === null ? '—' : `${foodCostPct.toFixed(1)}%`}
-          hint={`${formatMoney(periodExpense, settings)} of ${formatMoney(periodSales, settings)}`}
+          hint={
+            foodCostPct === null
+              ? `${formatMoney(periodExpense, settings)} spent · record sales to see food cost`
+              : `${formatMoney(periodExpense, settings)} of ${formatMoney(periodSales, settings)}`
+          }
           tone="gold"
         />
         <StatCard

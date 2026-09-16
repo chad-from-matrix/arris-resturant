@@ -101,7 +101,7 @@ export default function AdminTablesPage() {
         ) : null
       }
     >
-      <PermissionGate permission="menu.view">
+      <PermissionGate permission="tables.manage">
         <Card className="no-print mb-5 max-w-xs">
           <BranchFilter value={branch} onChange={setBranch} />
         </Card>

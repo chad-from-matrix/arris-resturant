@@ -87,7 +87,7 @@ export default function AdminCategoriesPage() {
         ) : null
       }
     >
-      <PermissionGate permission="menu.view">
+      <PermissionGate permission="menu.manage">
         {loading ? <Spinner /> : null}
         {!loading && !categories.length ? (
           <EmptyState title="No categories yet" body="Run the seed script or add one manually." />

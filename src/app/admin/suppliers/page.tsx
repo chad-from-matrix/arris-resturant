@@ -137,7 +137,7 @@ export default function AdminSuppliersPage() {
         ) : null
       }
     >
-      <PermissionGate permission="expenses.view">
+      <PermissionGate permission="suppliers.view">
         <FilterPanel>
           <DateRangeFilter value={range} onChange={setRange} />
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3">

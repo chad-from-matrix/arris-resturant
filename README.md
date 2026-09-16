@@ -152,12 +152,20 @@ npm run build          # production build
 npm run lint           # ESLint
 npm run typecheck      # tsc --noEmit
 npm test               # acceptance suite against the emulators
-npm run test:browser   # rendered-page checks (needs npm run dev)
+npm run test:browser   # rendered customer pages (needs npm run dev)
+npm run test:admin     # admin dashboard, per role (needs npm run dev)
 ```
 
-`tests/acceptance.test.ts` runs the brief's acceptance checklist through the
-application's own data layer and the real security rules. `tests/browser.mjs`
-drives Chromium over the rendered pages at phone and desktop widths.
+- `tests/acceptance.test.ts` — the brief's acceptance checklist, run through the
+  application's own data layer and the real security rules.
+- `tests/browser.mjs` — drives Chromium over the customer pages at phone and
+  desktop widths: the gold ring, numbered badges, ornament dividers, variant
+  price rows, `₹` with no decimals, and no sideways scrolling at 390px.
+- `tests/admin.mjs` — signs in as super admin, manager and staff, loads all
+  fifteen admin screens and checks each sidebar offers only what that role can use.
+
+Run `next build` and `next dev` against separate checkouts, or delete `.next`
+between them — sharing the directory leaves the dev server serving broken chunks.
 
 ---
 

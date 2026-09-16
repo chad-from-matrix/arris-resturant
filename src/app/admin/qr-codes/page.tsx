@@ -174,7 +174,7 @@ function QrCodesBody() {
 export default function AdminQrCodesPage() {
   return (
     <AdminShell title="QR Codes" description="Generate, download and print table QR codes">
-      <PermissionGate permission="menu.view">
+      <PermissionGate permission="tables.manage">
         <Suspense fallback={<Spinner />}>
           <QrCodesBody />
         </Suspense>

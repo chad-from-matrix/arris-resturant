@@ -4,15 +4,14 @@ import { useEffect, useState } from 'react';
 import { AdminShell, PermissionGate } from '@/components/admin/AdminShell';
 import { Logo } from '@/components/brand/Logo';
 import { Ornament } from '@/components/brand/Ornament';
-import { Banner, Card, Field, Spinner, TableShell, Td, Th } from '@/components/ui/Primitives';
+import { Banner, Card, Field } from '@/components/ui/Primitives';
 import { useApp } from '@/lib/app-context';
-import { subscribeAuditLogs } from '@/lib/db/audit';
 import { saveSettings } from '@/lib/db/settings';
 import { subscribePriceHistory } from '@/lib/db/menu';
 import { firebaseReady } from '@/lib/firebase';
-import { formatDateTime, formatMoney } from '@/lib/format';
+import { formatMoney } from '@/lib/format';
 import { brandImagePath, uploadImage } from '@/lib/storage';
-import type { AppSettings, AuditLog, PriceHistoryEntry } from '@/lib/types';
+import type { AppSettings, PriceHistoryEntry } from '@/lib/types';
 
 export default function AdminSettingsPage() {
   const { settings, actor, can } = useApp();
@@ -21,31 +20,18 @@ export default function AdminSettingsPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [logs, setLogs] = useState<AuditLog[]>([]);
   const [prices, setPrices] = useState<PriceHistoryEntry[]>([]);
-  const [loadingLogs, setLoadingLogs] = useState(true);
 
   const isSuperAdmin = can('*');
-  const canSeeAudit = can('reports.view') || isSuperAdmin;
 
   useEffect(() => {
     setDraft(settings);
   }, [settings]);
 
   useEffect(() => {
-    if (!firebaseReady || !canSeeAudit) {
-      setLoadingLogs(false);
-      return;
-    }
-    const unsubs = [
-      subscribeAuditLogs(100, (rows) => {
-        setLogs(rows);
-        setLoadingLogs(false);
-      }, () => setLoadingLogs(false)),
-      subscribePriceHistory(50, setPrices, () => undefined),
-    ];
-    return () => unsubs.forEach((u) => u());
-  }, [canSeeAudit]);
+    if (!firebaseReady || !isSuperAdmin) return;
+    return subscribePriceHistory(50, setPrices, () => undefined);
+  }, [isSuperAdmin]);
 
   const save = async () => {
     setSaving(true);
@@ -90,7 +76,7 @@ export default function AdminSettingsPage() {
 
   return (
     <AdminShell title="Settings" description="Branding, currency and the audit trail">
-      <PermissionGate permission="dashboard.view">
+      <PermissionGate permission="settings.manage">
         {notice ? (
           <div className="mb-4">
             <Banner tone="success">{notice}</Banner>
@@ -295,63 +281,6 @@ export default function AdminSettingsPage() {
           </div>
         ) : null}
 
-        {canSeeAudit ? (
-          <Card className="mt-5">
-            <h2 className="label-text text-[11px] text-copper">Audit log</h2>
-            <p className="mt-1 text-xs text-marble-vein">
-              Every financial and configuration change, with old value, new value, who and when.
-              The log is append-only.
-            </p>
-            {loadingLogs ? <Spinner /> : null}
-            {!loadingLogs && logs.length ? (
-              <div className="mt-4">
-                <TableShell>
-                  <thead>
-                    <tr>
-                      <Th>When</Th>
-                      <Th>Who</Th>
-                      <Th>Entity</Th>
-                      <Th>Action</Th>
-                      <Th>Field</Th>
-                      <Th>Old value</Th>
-                      <Th>New value</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {logs.map((log) => (
-                      <tr key={log.id}>
-                        <Td>
-                          <span className="text-xs text-marble-vein">
-                            {formatDateTime(log.createdAt)}
-                          </span>
-                        </Td>
-                        <Td>{log.userName}</Td>
-                        <Td>{log.entity}</Td>
-                        <Td>
-                          <span className="label-text rounded-full bg-copper/15 px-2.5 py-1 text-[10px] text-copper">
-                            {log.action}
-                          </span>
-                        </Td>
-                        <Td>{log.field ?? '—'}</Td>
-                        <Td>
-                          <span className="text-xs text-marble-vein">{log.oldValue ?? '—'}</span>
-                        </Td>
-                        <Td>
-                          <span className="text-xs font-semibold text-brown">
-                            {log.newValue ?? '—'}
-                          </span>
-                        </Td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </TableShell>
-              </div>
-            ) : null}
-            {!loadingLogs && !logs.length ? (
-              <p className="mt-4 text-sm text-marble-vein">Nothing logged yet.</p>
-            ) : null}
-          </Card>
-        ) : null}
       </PermissionGate>
     </AdminShell>
   );

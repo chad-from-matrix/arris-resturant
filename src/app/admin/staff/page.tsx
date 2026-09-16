@@ -141,7 +141,7 @@ export default function AdminStaffPage() {
         ) : null
       }
     >
-      <PermissionGate permission="dashboard.view">
+      <PermissionGate permission="staff.view">
         {notice ? (
           <div className="mb-4">
             <Banner tone="success">{notice}</Banner>
