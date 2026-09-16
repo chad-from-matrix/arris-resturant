@@ -6,29 +6,33 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ---------- helpers ----------
+    // Every role check resolves through role(), which performs exactly ONE
+    // document read. Chaining separate exists()/get() helpers blows the
+    // per-request access-call limit and turns a legitimate write into an
+    // evaluation error, so keep the single-read shape.
     function signedIn() {
       return request.auth != null;
     }
 
-    function staffDoc() {
-      return get(/databases/$(database)/documents/staff/$(request.auth.uid)).data;
+    function staffPath() {
+      return /databases/$(database)/documents/staff/$(request.auth.uid);
     }
 
-    function isStaffMember() {
-      return signedIn()
-        && exists(/databases/$(database)/documents/staff/$(request.auth.uid))
-        && staffDoc().active == true;
-    }
-
+    // get() on a missing document raises a service-call error rather than
+    // returning null, so exists() has to gate it. A signed-in user with no
+    // staff record, or a deactivated one, collapses to 'none'.
     function role() {
-      return isStaffMember() ? staffDoc().role : 'none';
+      return signedIn() && exists(staffPath()) && get(staffPath()).data.active == true
+        ? get(staffPath()).data.role
+        : 'none';
     }
 
-    function isSuperAdmin() { return role() == 'super_admin'; }
-    function isManager()    { return role() == 'manager'; }
-    function isStaff()      { return role() == 'staff'; }
+    function isStaffMember() { return role() != 'none'; }
+    function isSuperAdmin()  { return role() == 'super_admin'; }
+    function isManager()     { return role() == 'manager'; }
+    function isStaff()       { return role() == 'staff'; }
 
-    function isManagerUp()  { return isSuperAdmin() || isManager(); }
+    function isManagerUp()   { return role() in ['super_admin', 'manager']; }
 
     function unchanged(field) {
       return !(field in request.resource.data)

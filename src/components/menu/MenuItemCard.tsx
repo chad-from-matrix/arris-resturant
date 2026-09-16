@@ -85,12 +85,14 @@ function VariantRows({ item }: { item: MenuItem }) {
       {item.variants.map((variant) => (
         <li
           key={variant.name}
-          className="flex items-baseline justify-between gap-3 text-left text-sm"
+          className="flex items-baseline justify-between gap-2 text-left text-sm"
         >
-          <span className="text-brown/90">{variant.name}</span>
+          {/* min-w-0 lets a long variant name wrap instead of pushing the
+              price past the edge of the card on a narrow phone. */}
+          <span className="min-w-0 break-words text-brown/90">{variant.name}</span>
           <span
             aria-hidden="true"
-            className="mx-1 min-w-4 flex-1 translate-y-[-3px] border-b border-dotted border-marble-vein/70"
+            className="mx-1 hidden min-w-4 flex-1 translate-y-[-3px] border-b border-dotted border-marble-vein/70 sm:block"
           />
           <span className="shrink-0 font-semibold text-brown">
             {formatMoney(variant.price, settings)}

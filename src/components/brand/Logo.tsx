@@ -1,7 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useApp } from '@/lib/app-context';
+
+/**
+ * Remembers a missing local logo file for the session so a project that has
+ * not yet had `arris-logo.png` dropped in does not retry on every render.
+ */
+let localLogoMissing = false;
 
 /**
  * Renders the supplied ARRIS logo file — never a redrawn or traced copy.
@@ -28,8 +34,27 @@ export function Logo({
   priority?: boolean;
 }) {
   const { settings } = useApp();
+  const imgRef = useRef<HTMLImageElement>(null);
   const [failed, setFailed] = useState(false);
   const src = settings.logoUrl || '/brand/arris-logo.png';
+
+  const markFailed = () => {
+    if (!settings.logoUrl) localLogoMissing = true;
+    setFailed(true);
+  };
+
+  // The browser starts fetching before React hydrates, so an image that has
+  // already failed by then never fires onError. Check the element directly.
+  useEffect(() => {
+    if (!settings.logoUrl && localLogoMissing) {
+      setFailed(true);
+      return;
+    }
+    setFailed(false);
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) markFailed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- markFailed is stable for this src
+  }, [src, settings.logoUrl]);
 
   if (failed) {
     return (
@@ -47,13 +72,14 @@ export function Logo({
   return (
     // eslint-disable-next-line @next/next/no-img-element -- fixed-size brand asset with an onError fallback
     <img
+      ref={imgRef}
       src={src}
       alt={`${settings.restaurantName} logo`}
       height={height}
       style={{ height }}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
-      onError={() => setFailed(true)}
+      onError={markFailed}
       className={`w-auto object-contain ${variant === 'light-surface' ? 'logo-on-light' : ''} ${className}`}
     />
   );

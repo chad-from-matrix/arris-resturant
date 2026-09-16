@@ -2,16 +2,19 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    function staffDoc() {
-      return firestore.get(/databases/(default)/documents/staff/$(request.auth.uid)).data;
+    // exists() must gate get() — see the note in firestore.rules.
+    function staffPath() {
+      return /databases/(default)/documents/staff/$(request.auth.uid);
     }
-    function isStaffMember() {
+    function role() {
       return request.auth != null
-        && firestore.exists(/databases/(default)/documents/staff/$(request.auth.uid))
-        && staffDoc().active == true;
+        && firestore.exists(staffPath())
+        && firestore.get(staffPath()).data.active == true
+        ? firestore.get(staffPath()).data.role
+        : 'none';
     }
     function isManagerUp() {
-      return isStaffMember() && staffDoc().role in ['super_admin', 'manager'];
+      return role() in ['super_admin', 'manager'];
     }
     function isImage() {
       return request.resource.contentType.matches('image/.*')

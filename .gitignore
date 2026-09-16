@@ -37,3 +37,12 @@ next-env.d.ts
 .firebase
 firebase-debug.log
 *.tsbuildinfo
+
+# Emulator artefacts
+firestore-debug.log
+ui-debug.log
+pubsub-debug.log
+database-debug.log
+
+# Playwright output
+.playwright/
