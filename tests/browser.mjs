@@ -61,6 +61,26 @@ const badges = await page.locator('.item-badge').allTextContents();
 check('every card carries a numbered badge', badges.length >= cardCount && badges.every((b) => /^\d{2}$/.test(b.trim())),
   `${badges.length} badges, first: ${badges.slice(0, 3).join(',')}`);
 
+// Acceptance 9: gold ring + numbered badge + ornament divider on every card.
+const dividers = await page.evaluate(() => {
+  const cards = document.querySelectorAll('[data-testid="menu-card"]');
+  let withDivider = 0;
+  let goldDiamond = 0;
+  for (const card of cards) {
+    // The divider is a hairline rule either side of a rotated gold diamond.
+    const diamond = card.querySelector('div[aria-hidden="true"] > span.rotate-45');
+    if (!diamond) continue;
+    withDivider += 1;
+    const bg = getComputedStyle(diamond).backgroundColor;
+    const rules = diamond.parentElement.querySelectorAll('span.h-px');
+    if (bg === 'rgb(230, 151, 25)' && rules.length === 2) goldDiamond += 1;
+  }
+  return { cards: cards.length, withDivider, goldDiamond };
+});
+check('every card carries the gold ornament divider',
+  dividers.withDivider === dividers.cards && dividers.goldDiamond === dividers.cards,
+  JSON.stringify(dividers));
+
 const ring = await page.locator('.photo-ring').first().evaluate((el) => {
   const s = getComputedStyle(el);
   return { width: s.borderTopWidth, color: s.borderTopColor, radius: s.borderTopLeftRadius };
@@ -79,6 +99,32 @@ const bariisCard = page.locator('[data-testid="menu-card"]').first();
 const bariisText = await bariisCard.innerText();
 const bariisRows = (bariisText.match(/₹[\d,]+/g) ?? []);
 check('variant card shows all four Bariis rows', bariisRows.length >= 4, bariisRows.join(' '));
+
+// Clear the variant search before filtering by branch.
+await page.getByPlaceholder(/Search a dish/i).fill('');
+await page.waitForTimeout(600);
+
+// Acceptance 7: the branch filter separates the three operations.
+const categoriesFor = async (branchSlug) => {
+  await page.selectOption('select[aria-label="Filter by branch"]', branchSlug);
+  await page.waitForTimeout(800);
+  return (await page.locator('section[id] h2.script-title').allTextContents()).map((t) => t.trim());
+};
+const cafeOnly = await categoriesFor('arris-2-cafe');
+check('Arris 2 Café shows only café categories',
+  cafeOnly.length > 0 && cafeOnly.every((c) => /Fresh Juice|Drink & Coffee/i.test(c)),
+  cafeOnly.join(' / '));
+const arris1 = await categoriesFor('arris-1');
+check('Arris 1 shows only restaurant categories',
+  arris1.length > 0 && arris1.every((c) => /Breakfast|Lunch & Dinner/i.test(c)),
+  arris1.join(' / '));
+const arris2 = await categoriesFor('arris-2');
+check('Arris 2 shows restaurant and café categories',
+  arris2.some((c) => /Breakfast|Lunch & Dinner/i.test(c)) &&
+    arris2.some((c) => /Fresh Juice|Drink & Coffee/i.test(c)),
+  arris2.join(' / '));
+await page.selectOption('select[aria-label="Filter by branch"]', '');
+await page.waitForTimeout(600);
 
 // Script section title uses Great Vibes.
 await page.getByPlaceholder(/Search a dish/i).fill('');
@@ -123,13 +169,35 @@ const cols = await desktop.locator('[data-testid="menu-card"]').first().evaluate
   return getComputedStyle(grid).gridTemplateColumns.split(' ').length;
 });
 check('desktop menu uses 3–4 columns', cols >= 3 && cols <= 4, `${cols} columns`);
+const desktopCards = await desktop.evaluate(() => {
+  const cards = document.querySelectorAll('[data-testid="menu-card"]');
+  let complete = 0;
+  for (const card of cards) {
+    const badge = card.querySelector('.item-badge');
+    const ring = card.querySelector('.photo-ring');
+    const diamond = card.querySelector('div[aria-hidden="true"] > span.rotate-45');
+    if (badge && ring && diamond) complete += 1;
+  }
+  return { cards: cards.length, complete };
+});
+check('desktop cards keep ring, badge and divider',
+  desktopCards.cards > 0 && desktopCards.complete === desktopCards.cards,
+  JSON.stringify(desktopCards));
 await desktop.screenshot({ path: `${OUT}/menu-desktop.png`, fullPage: false });
 
 // ---- admin login gate ----
 await desktop.goto(`${BASE}/admin`, { waitUntil: 'domcontentloaded' });
-await desktop.waitForTimeout(1200);
+// Wait for the auth check to resolve rather than guessing at a delay.
+const signInVisible = await desktop
+  .waitForSelector('input[type=email]', { timeout: 20000 })
+  .then(() => true)
+  .catch(() => false);
 const adminText = await desktop.locator('body').innerText();
-check('admin is gated behind a sign-in', /Sign in/i.test(adminText) && /Staff/i.test(adminText));
+check(
+  'admin is gated behind a sign-in',
+  signInVisible && /Sign in/i.test(adminText),
+  signInVisible ? '' : adminText.slice(0, 80),
+);
 await desktop.screenshot({ path: `${OUT}/admin-login.png` });
 
 check('no page errors or failed requests', errors.length === 0, errors.slice(0, 3).join(' | '));
